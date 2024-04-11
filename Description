@@ -1,0 +1,11 @@
+Package: pharmahealth
+Title: Combines pharmaceutical with health statistics
+Version: 0.0.0.9000
+Authors@R: 
+    person("Cathy", "Do", , "cdo2@usf.edu", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package compares and compiles relations between pharmacy and health data statistics
+License: CC0 1.0 Universal
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.1
