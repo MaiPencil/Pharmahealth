@@ -1,0 +1,93 @@
+#' Calculate summary statistics for blood cell data
+#'
+#' This function calculates summary statistics (mean, median, and standard deviation) for each type of blood cell across the years.
+#'
+#' @param blood_cells A data frame containing blood cell data, where rows represent years and columns represent different types of blood cells.
+#' @return A data frame containing summary statistics for each type of blood cell.
+#' @export
+calculate_blood_cell_summary <- function(blood_cells) {
+  # Transpose the data frame for easier calculation of summary statistics
+  blood_cells_t <- t(blood_cells[, -1])
+  rownames(blood_cells_t) <- colnames(blood_cells)[-1]
+  colnames(blood_cells_t) <- blood_cells$Type_of_Cell
+
+  # Calculate summary statistics
+  summary_stats <- apply(blood_cells_t, 2, function(x) c(mean = mean(x, na.rm = TRUE), median = median(x, na.rm = TRUE), sd = sd(x, na.rm = TRUE)))
+  summary_stats <- as.data.frame(summary_stats)
+  row.names(summary_stats) <- c("mean", "median", "sd")
+
+  return(summary_stats)
+}
+
+#' Plot Trends Over Time
+#'
+#' Plot trends over time for given data.
+#'
+#' @param data A data frame containing the data.
+#' @param x_var The name of the column containing the x-axis variable (time).
+#' @param y_vars Character vector of column names containing the y-axis variables.
+#' @return A line plot of trends over time.
+#' @export
+plot_trends_over_time <- function(data, title = NULL, xlab = NULL, ylab = NULL) {
+  # Load necessary packages
+  library(ggplot2)
+  library(tidyr)
+
+  # Convert the data frame to long format
+  data_long <- pivot_longer(data, cols = -Type_of_Cell, names_to = "Year", values_to = "Value")
+
+  # Ensure Year is treated as a factor
+  data_long$Year <- factor(data_long$Year)
+
+  # Complete the data to include all combinations of Type_of_Cell and Year
+  data_long <- complete(data_long, nesting(Type_of_Cell, Year), fill = list(Value = 0))
+
+  # Create the plot
+  p <- ggplot(data_long, aes(x = Year, y = Value, color = Type_of_Cell, group = Type_of_Cell)) +
+    geom_line() +
+    labs(title = title, x = xlab, y = ylab) +
+    theme_minimal()
+
+  # Return the plot
+  return(p)
+}
+
+
+#' Compare Blood Cell Counts Distribution
+#'
+#' Compare the distribution of blood cell counts across different years.
+#'
+#' @param blood_cells A data frame containing blood cell count data.
+#' @param cell_type The type of blood cell to compare.
+#' @return A ggplot object showing the distribution of the specified blood cell counts.
+#' @import ggplot2
+#' @examples
+#' \dontrun{
+#' # Load the data
+#' data("blood_cells")
+#' # Compare distribution of White Cells
+#' compare_distribution(blood_cells, "White Cells")
+#' }
+#' @export
+compare_distribution <- function(data) {
+  # Load necessary packages
+  library(ggplot2)
+  library(tidyr)
+
+  # Reshape the data to long format
+  data_long <- pivot_longer(data, cols = -Type_of_Cell, names_to = "Year", values_to = "Value")
+
+  # Convert Year to factor for correct ordering
+  data_long$Year <- factor(data_long$Year, levels = names(data)[-1])
+
+  # Create scatterplot with all data
+  p <- ggplot(data_long, aes(x = Year, y = Value, color = Type_of_Cell)) +
+    geom_point() +
+    labs(title = "Scatterplot of Blood Cell Types Over Years",
+         x = "Year", y = "Value") +
+    theme_minimal()
+
+  # Return the scatterplot
+  return(p)
+}
+
