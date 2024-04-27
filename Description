@@ -2,8 +2,7 @@ Package: pharmahealth
 Title: Pharmaceutical and Health Analytics
 Version: 0.0.0.9000
 Authors@R: 
-    person("Cathy", "Do", , "cdo2@usf.edu", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
+    person("Cathy", "Do", , "cdo2@usf.edu", role = c("aut", "cre"))
 Description: This package compares and compiles relations between pharmacy and health data statistics.
 License: CC0 1.0 Universal
 Encoding: UTF-8
